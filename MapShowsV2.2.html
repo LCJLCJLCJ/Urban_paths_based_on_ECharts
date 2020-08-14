@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MapShowsV2.2</title>
+    <script src="./EchartsLib/jquery.js"></script>
+    <script src="./EchartsLib/echarts.js"></script>
+    <script src="./EchartsLib/china.js"></script>
+    <style>#MapShow {width:1080px; height: 1000px;margin: auto;}</style>
+</head>
+<body>
+
+<div id="MapShow" style="width:100%;height:1000px"></div>
+
+<script>
+    var myChart = echarts.init(document.getElementById('MapShow'));
+
+    var geoCoordMap = {
+        '上海': [ 121.48053886017651 ,  31.235929042252014 ],
+        '南京': [ 118.80242172124585 ,  32.06465288561847 ],
+        '北京': [ 116.4133836971231 ,  39.910924547299565 ],
+        '天津': [ 117.2095232146708 ,  39.093667843403956 ],
+        '石家庄': [ 114.52153190157445 ,  38.0483119268727 ],
+        '呼和浩特': [ 111.75550856170946 ,  40.84842299711348 ],
+        '沈阳': [ 123.47109664482264 ,  41.68383006919066 ],
+        '长春': [ 125.3306020759069 ,  43.82195350104314 ],
+        '太原': [ 112.55639149167204 ,  37.87698902884778 ],
+        '杭州': [ 120.21551180372168 ,  30.25308298169347 ],
+        '南昌': [ 115.86458944231661 ,  28.68945529506072 ],
+        '广州': [ 113.27143134445974 ,  23.135336306695006 ],
+        '昆明': [ 102.85244836500482 ,  24.873998150044006 ],
+        '拉萨': [ 91.12082391546393 ,  29.65004027476773 ],
+        '武汉': [ 114.31158155473231 ,  30.598466736400987 ],
+        '西安': [ 108.94646555063274 ,  34.34726881662395 ],
+        '成都': [ 104.08153351042463 ,  30.655821878416408 ],
+        '重庆': [ 106.55843415537664 ,  29.568996245338923 ],
+        '银川': [ 106.23849358740017 ,  38.492460055509596 ],
+        '乌鲁木齐': [ 87.62443993536046 ,  43.830763204290484 ],
+        '福州': [ 119.30346983854001 ,  26.080429420698078 ],
+        '西宁': [ 101.78445017050855 ,  36.62338469651661 ],
+
+    };
+
+    var DirDataClose  = [
+        // 原始的数据，随意捏造的
+        [{name: '上海', value: 'A'}, {name: '上海', value: 'IP: xxx.xxx.xxx.1'}],
+        [{name: '上海', value: 'B'}, {name: '南京', value: 'IP: xxx.xxx.xxx.2'}],
+        [{name: '南京', value: 'C'}, {name: '上海', value: 'IP: xxx.xxx.xxx.1'}],
+        [{name: '上海', value: 'D'}, {name: '杭州', value: 'IP: xxx.xxx.xxx.3'}],
+        [{name: '杭州', value: 'E'}, {name: '上海', value: 'IP: xxx.xxx.xxx.1'}],
+        [{name: '上海', value: 'F'}, {name: '武汉', value: 'IP: xxx.xxx.xxx.4'}],
+        [{name: '武汉', value: 'G'}, {name: '上海', value: 'IP: xxx.xxx.xxx.7'}],
+        [{name: '上海', value: 'H'}, {name: '福州', value: 'IP: xxx.xxx.xxx.9'}],
+        [{name: '福州', value: 'I'}, {name: '上海', value: 'IP: xxx.xxx.xxx.10'}],
+        [{name: '南京', value: 'J'}, {name: '北京', value: 'IP: xxx.xxx.xxx.13'}],
+        [{name: '南京', value: 'K'}, {name: '北京', value: 'IP: xxx.xxx.xxx.13'}],
+        [{name: '南京', value: 'L'}, {name: '北京', value: 'IP: xxx.xxx.xxx.13'}],
+        [{name: '南京', value: 'M'}, {name: '太原', value: 'IP: xxx.xxx.xxx.8'}],
+        [{name: '北京', value: 'N'}, {name: '天津', value: 'IP: xxx.xxx.xxx.65'}],
+        [{name: '北京', value: 'O'}, {name: '石家庄', value: 'IP: xxx.xxx.xxx.81'}],
+        [{name: '北京', value: 'P'}, {name: '呼和浩特', value: 'IP: xxx.xxx.xxx.75'}],
+        [{name: '呼和浩特', value: 'Q'}, {name: '北京', value: 'IP: xxx.xxx.xxx.62'}],
+        [{name: '北京', value: 'R'}, {name: '沈阳', value: 'IP: xxx.xxx.xxx.15'}],
+        [{name: '沈阳', value: 'S'}, {name: '北京', value: 'IP: xxx.xxx.xxx.62'}],
+        [{name: '北京', value: 'T'}, {name: '长春', value: 'IP: xxx.xxx.xxx.54'}],
+        [{name: '杭州', value: 'U'}, {name: '南昌', value: 'IP: xxx.xxx.xxx.83'}],
+        [{name: '南昌', value: 'V'}, {name: '广州', value: 'IP: xxx.xxx.xxx.5'}],
+        [{name: '广州', value: 'W'}, {name: '南昌', value: 'IP: xxx.xxx.xxx.34'}],
+        [{name: '广州', value: 'X'}, {name: '昆明', value: 'IP: xxx.xxx.xxx.42'}],
+        [{name: '武汉', value: 'Y'}, {name: '西安', value: 'IP: xxx.xxx.xxx.35'}],
+        [{name: '西安', value: 'Z'}, {name: '成都', value: 'IP: xxx.xxx.xxx.45'}],
+        [{name: '成都', value: 'AA'}, {name: '西安', value: 'IP: xxx.xxx.xxx.123'}],
+        [{name: '西安', value: 'BB'}, {name: '重庆', value: 'IP: xxx.xxx.xxx.182'}],
+        [{name: '西安', value: 'CC'}, {name: '西宁', value: 'IP: xxx.xxx.xxx.124'}],
+        [{name: '西宁', value: 'DD'}, {name: '西安', value: 'IP: xxx.xxx.xxx.82'}],
+        [{name: '西宁', value: 'EE'}, {name: '银川', value: 'IP: xxx.xxx.xxx.35'}],
+        [{name: '西宁', value: 'FF'}, {name: '乌鲁木齐', value: 'IP: xxx.xxx.xxx.98'}],
+        [{name: '南京', value: 'GG'}, {name: '北京', value: 'IP: xxx.xxx.xxx.13'}],
+        [{name: '南京', value: 'HH'}, {name: '北京', value: 'IP: xxx.xxx.xxx.13'}],
+        [{name: '武汉', value: 'II'}, {name: '西安', value: 'IP: xxx.xxx.xxx.35'}],
+        [{name: '武汉', value: 'JJ'}, {name: '西安', value: 'IP: xxx.xxx.xxx.35'}],
+
+
+    ];
+
+    //数据转换函数，转换以后的格式：[fromName:'cityName',toName:'cityName',coords:[lng,lat]]
+    var convertData = function (data) { //需要四组数据 一组全国城市经纬度，北京，上海，广州，信息 比对得到从那个城市出发，到哪个城市，开始位置和结束位置
+        var res = []; //后台直接拼成前端需要的数据格式，直接使用就好了！
+        for (var i = 0; i < data.length; i++) {
+            var dataItem = data[i];
+            var fromCoord = geoCoordMap[dataItem[0].name];
+            var toCoord = geoCoordMap[dataItem[1].name];
+            if (fromCoord && toCoord) {
+                res.push({
+                    fromName: dataItem[0].name,
+                    toName: dataItem[1].name,
+                    coords: [fromCoord, toCoord],
+                    value0: dataItem[0].value,
+                    value1: dataItem[1].value,
+                });
+            }
+        }
+        return res;
+    };
+
+    // var color = ['#ff0000', '#469de9'];
+    var series = [];
+    [['上海', DirDataClose],].forEach(function (item) {
+        series.push({
+            name: item[0],
+            type: 'lines',
+            zlevel: 1,
+            effect: {                      //特效线的配置
+                show: true,
+                period: 12,                //动画时间,箭头指向速度，值越小速度越快
+                trailLength: 0.2,          //特效尾巴长度，从0到1,特效尾迹长度[0,1]值越大，尾迹越长重
+                color: '#ff0000',          //特效尾巴颜色
+                //color: '#46bee9',
+                symbol: 'arrow',           //箭头图标
+                symbolSize: 3              //特效尾巴大小（宽度）
+            },
+            lineStyle: {
+                normal: {
+                    color: 'rgba(255,183,35,0.2)',       //线的颜色
+                    width: 1,              // 特效线宽
+                    opacity: 1, //尾迹线条透明度
+                    curveness: 0.2         //边的曲度，支持从0到1的值，值越大曲度就越大
+                }
+            },
+            data: convertData(item[1])     //[fromName:'cityName',toName:'cityName',coords:[lng,lat]]
+        },
+            {
+                name: item[0],
+                type: 'effectScatter',
+                coordinateSystem: 'geo',
+                zlevel: 2,
+                rippleEffect: {               //涟漪特效
+                    period: 4,                //动画时间，值越小速度越快
+                    brushType: 'stroke',         //波纹绘制方式 stroke, fill
+                    scale: 4                    //波纹圆环最大限制，值越大波纹越大
+                },
+                label: {
+                    normal: {
+                        show: false,                 // 转折节点地名不显示，多余，不然会与原先的靠在一起导致显示很乱
+                        position: 'right',          //显示位置
+                        offset: [5, 0],             //偏移设置
+                        // formatter: '{b}'
+                        formatter: function(params){    //圆环显示文字
+                            return params.data.name;
+                        },
+                        fontSize: 19
+                    },
+                    emphasis: {
+                        show: true
+                    }
+                },
+                symbol: 'circle',       // 节点处的样式显示ECharts 提供的标记类型包括 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbolSize: function (val) {
+                    return 5+ val[2] * 0.05;       //圆环大小
+                },
+                itemStyle: {
+                    normal: {
+                        color: 'rgba(255,0,0,0.66)',
+                    }
+                },
+                data: item[1].map(function (dataItem) {
+                    return {
+                        name: dataItem[0].name,
+                        value: geoCoordMap[dataItem[0].name].concat([dataItem[1].value])
+                    };
+                })
+            },
+            // ?
+            {
+                name: item[0],
+                type: 'effectScatter',
+                coordinateSystem: 'geo',
+                zlevel: 3,
+                rippleEffect: {
+                    brushType: 'stroke'
+                },
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}'
+                    }
+                },
+                symbolSize: function (val) {
+                    return val[2] / 8;
+                },
+                itemStyle: {
+                    normal: {
+                        color: 'rgba(255,255,255,0.89)'
+                    }
+                },
+                data: item[1].map(function (dataItem) {
+                    return {
+                        name: dataItem[1].name,
+                        value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
+                    };
+                })
+            },
+            //被攻击点
+            {
+                type: 'scatter',
+                coordinateSystem: 'geo',
+                zlevel: 4,
+                rippleEffect: {
+                    period: 4,
+                    brushType: 'stroke',
+                    scale: 4
+                },
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'right',
+                        // offset:[5, 0],
+                        color: '#0f0',
+                        formatter: '{b}',
+                        textStyle: {
+                            color: "rgba(238,199,82,0.73)"
+                        }
+                    },
+                    emphasis: {
+                        show: true,
+                        color: "#f60"
+                    }
+                },
+                symbol: 'pin',            // 无锡的地方做个标记
+                symbolSize: 0,
+                data: [{
+                    name: item[0],
+                    value: geoCoordMap[item[0]].concat([0]),
+                }],
+            }
+            );
+
+    });
+
+    option = {
+        backgroundColor: '#404a59',     // 背景颜色
+        // 标题组件的设置
+        title: {
+            text: 'MapShow',
+            subtext: 'V2.2',
+            // sublink: 'https://www.baidu.com/超链接空着先不做',
+            y:'50px',
+            left: 'center',
+            textStyle: {fontSize:24, color: '#000000'}
+        },
+        // 提示框组件的设置
+        tooltip: {                                     // 鼠标悬浮下，提示标签在这边修改
+            show: true,//显示提示标签
+            trigger: 'item',  // 数据项图形触发，主要在散点图，饼图等无类目轴的图表中使用。
+            backgroundColor:"#00daff",//提示标签背景颜色
+            textStyle:{color:"#000000"},//提示标签字体颜色
+            showDelay: 0,
+            hideDelay: 0,
+            enterable: true,
+            transitionDuration: 0,
+            extraCssText: 'z-index:100',
+            // formatter: '{b}', //提示标签格式,    要根据自己的业务需求改，显示内容, 参考：https://www.oschina.net/question/1782851_158302
+            formatter:function(params, ticket, callback){
+                console.log(params);
+                if(params.seriesType=="effectScatter") {
+                    return params.data.name+""+params.data.value[2];
+                }else if(params.seriesType=="lines"){
+                    return params.data.fromName+"->"+params.data.toName+"<br />"+params.data.value0+"<br />"+params.data.value1;
+                }else{
+                    return params.name;
+                }
+            }
+
+        },
+
+        // 图例（暂时不考虑先）
+        // legend: { //显示种类 (北京，上海，广州，三种)
+        //     orient: 'horizontal', //图例列表的布局朝向。
+        //     top: 'bottom', //显示位置
+        //     left: 'right', //显示位置
+        //     data: ['北京 Top10'], //数据和serieNname对应
+        //     textStyle: {
+        //         color: '#000000'
+        //     },
+        //     selectedMode: false //单选多选
+        // },
+
+        // 地理坐标系组件.用于地图的绘制，支持在地理坐标系上绘制散点图，线集。
+        geo: {
+            map:'china',
+            geoIndex: 0,
+            aspectScale: 0.75, //长宽比
+            showLegendSymbol: false, // 存在legend时显示
+            label: {
+                normal: {
+                    show: false,//显示省份标签
+                    textStyle:{color:"#339fb8"}//省份标签字体颜色
+                },
+                emphasis: {//对应的鼠标悬浮效果
+                    show: true,
+                    textStyle:{color:"#aaaaaa"},
+                }
+            },
+            roam: true,         //是否允许缩放
+
+            //itemStyle：地图外观定制，其中normal表示正常显示的样式，emphasis表示鼠标悬浮下样式
+            itemStyle: {
+                normal: {
+                    areaColor: '#323c48',
+                    borderColor: '#111'
+                },
+                emphasis: {
+                    areaColor: '#2a333d'
+                }
+            },
+
+        },
+        series: series //列表是数组
+    };
+
+    myChart.setOption(option);
+    // myChart.on('mouseover', function (params) {
+    //     var dataIndex = params.dataIndex;
+    //     console.log(params);
+    // });
+
+
+</script>
+
+</body>
+</html>
